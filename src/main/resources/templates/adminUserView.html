@@ -9,17 +9,25 @@
 
 <body>
 <h2>ユーザー登録フォーム</h2>
-<form th:action="@{/register}" method="post">
-    <label for="user_name">ユーザー名：</label>
-    <input type="text" id="user_name" name="user_name" th:value="${userName}"><br>
+<form th:action="@{/register}" method="post" th:object="${userRegisterForm}">
+<!--<form th:action="@{/register}" method="post">-->
+    <label for="userName">ユーザー名:</label>
+    <input type="text" th:field="*{userName}"><br>
+<!--    <label for="user_name">ユーザー名：</label>-->
+<!--    <input type="text" id="user_name" name="user_name" th:value="${userName}"><br>-->
 
     <label for="password">パスワード：</label>
-    <input type="password" id="password" name="password"><br>
+    <input type="password" th:field="*{password}"><br>
+<!--    <input type="password" id="password" name="password"><br>-->
 
-    <label for="role_id">ロール：</label>
-    <select id="role_id" name="role_id">
-        <option value="1" th:selected="${roleId == 1}">一般ユーザー</option>
-        <option value="2" th:selected="${roleId == 2}">管理者ユーザー</option>
+    <label for="roleId">ロール:</label>
+    <select th:field="*{roleId}">
+        <option value="1">一般ユーザー</option>
+        <option value="2">管理者ユーザー</option>
+<!--    <label for="role_id">ロール：</label>-->
+<!--    <select id="role_id" name="role_id">-->
+<!--        <option value="1" th:selected="${roleId == 1}">一般ユーザー</option>-->
+<!--        <option value="2" th:selected="${roleId == 2}">管理者ユーザー</option>-->
     </select>
     <button type="submit">登録</button>
 </form>
