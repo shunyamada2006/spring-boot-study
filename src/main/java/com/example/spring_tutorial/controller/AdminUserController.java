@@ -2,8 +2,12 @@ package com.example.spring_tutorial.controller;
 
 import java.util.List;
 
+import org.springframework.core.Conventions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -11,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.spring_tutorial.entity.User;
 import com.example.spring_tutorial.form.UserRegisterForm;
 import com.example.spring_tutorial.service.UserService;
+import org.springframework.security.core.Authentication;
 
 @Controller
 public class AdminUserController {
@@ -21,7 +26,7 @@ public class AdminUserController {
     }
 
     @GetMapping("/adminuser")
-    public String adminUser(Model model) {
+    public String adminUser(Model model, Authentication authentication) {
         // 最新のユーザーリストを取得
         List<User> users = userService.getAllUsers();
 
@@ -36,10 +41,17 @@ public class AdminUserController {
 
     @PostMapping("/register")
     public String registerUser(RedirectAttributes redirectAttributes,
-            UserRegisterForm form){
+              @Validated UserRegisterForm form,BindingResult result){
+//            UserRegisterForm form){
 //                               @RequestParam("user_name") String userName,
 //                               @RequestParam("password") String password,
 //                               @RequestParam("role_id") int roleId) {
+
+        if(result.hasErrors()){
+            redirectAttributes.addFlashAttribute("userRegisterForm",form);
+            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX +Conventions.getVariableName(form),result);
+            return "redirect:/adminuser";
+        }
 
         try {
             userService.createUser(form.getUserName(), form.getPassword(), form.getRoleId());
